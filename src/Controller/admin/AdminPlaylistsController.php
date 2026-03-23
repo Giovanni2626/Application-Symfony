@@ -1,0 +1,69 @@
+<?php
+namespace App\Controller\admin;
+
+use App\Entity\Playlist;
+use App\Form\PlaylistType;
+use App\Repository\PlaylistRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class AdminPlaylistsController extends AbstractController {
+
+    private $repository;
+
+    public function __construct(PlaylistRepository $repository) {
+        $this->repository = $repository;
+    }
+
+    #[Route('/gestion/playlists', name: 'admin.playlists')]
+    public function index(): Response {
+        return $this->render("admin/admin.playlists.html.twig", [
+            'playlists' => $this->repository->findAllOrderByName('ASC')
+        ]);
+    }
+
+    #[Route('/gestion/playlist/ajout', name: 'admin.playlist.ajout')]
+    public function ajout(Request $request): Response {
+        $playlist = new Playlist();
+        $form = $this->createForm(PlaylistType::class, $playlist);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->repository->add($playlist, true);
+            return $this->redirectToRoute('admin.playlists');
+        }
+
+        return $this->render("admin/admin.playlist.edit.html.twig", [
+            'playlist' => $playlist,
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[Route('/gestion/playlist/edit/{id}', name: 'admin.playlist.edit')]
+    public function edit(Playlist $playlist, Request $request): Response {
+        $form = $this->createForm(PlaylistType::class, $playlist);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->repository->add($playlist, true);
+            return $this->redirectToRoute('admin.playlists');
+        }
+
+        return $this->render("admin/admin.playlist.edit.html.twig", [
+            'playlist' => $playlist,
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[Route('/gestion/playlist/suppr/{id}', name: 'admin.playlist.suppr')]
+    public function suppr(Playlist $playlist): Response {
+        if ($playlist->getFormations()->count() > 0) {
+            $this->addFlash('error', 'Impossible de supprimer une playlist contenant des formations.');
+        } else {
+            $this->repository->remove($playlist, true);
+        }
+        return $this->redirectToRoute('admin.playlists');
+    }
+}
