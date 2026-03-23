@@ -16,7 +16,7 @@ class AdminCategoriesController extends AbstractController
         $this->repository = $repository;
     }
 
-    #[Route('/gestion/categories', name: 'admin.categories')]
+    #[Route('/admin/categories', name: 'admin.categories')]
     public function index(Request $request): Response
     {
         $nomCategorie = $request->get('nom');
@@ -39,7 +39,7 @@ class AdminCategoriesController extends AbstractController
         ]);
     }
 
-    #[Route('/gestion/categorie/suppr/{id}', name: 'admin.categorie.suppr')]
+    #[Route('/admin/categorie/suppr/{id}', name: 'admin.categorie.suppr')]
     public function suppr(Categorie $categorie): Response
     {
         if ($categorie->getFormations()->count() > 0) {

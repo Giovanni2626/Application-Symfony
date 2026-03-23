@@ -17,7 +17,7 @@ class AdminFormationsController extends AbstractController {
         $this->repository = $repository;
     }
 
-    #[Route('/gestion', name: 'admin.formations')]
+    #[Route('/admin/formations', name: 'admin.formations')]
     public function index(): Response {
         $formations = $this->repository->findAll();
         return $this->render("admin/admin.formations.html.twig", [
@@ -25,7 +25,7 @@ class AdminFormationsController extends AbstractController {
         ]);
     }
 
-    #[Route('/gestion/formation/edit/{id}', name: 'admin.formation.edit')]
+    #[Route('/admin/formation/edit/{id}', name: 'admin.formation.edit')]
     public function edit(Formation $formation, Request $request): Response {
         $form = $this->createForm(FormationType::class, $formation);
         $form->handleRequest($request);
@@ -41,7 +41,7 @@ class AdminFormationsController extends AbstractController {
         ]);
     }
 
-    #[Route('/gestion/formation/ajout', name: 'admin.formation.ajout')]
+    #[Route('/admin/formation/ajout', name: 'admin.formation.ajout')]
     public function ajout(Request $request): Response {
         $formation = new Formation();
         $form = $this->createForm(FormationType::class, $formation);
@@ -58,7 +58,7 @@ class AdminFormationsController extends AbstractController {
         ]);
     }
 
-    #[Route('/gestion/formation/suppr/{id}', name: 'admin.formation.suppr', methods: ['POST'])]
+    #[Route('/admin/formation/suppr/{id}', name: 'admin.formation.suppr', methods: ['POST'])]
     public function suppr(Formation $formation, Request $request): Response {
         if ($this->isCsrfTokenValid('delete'.$formation->getId(), $request->get('_token'))) {
             $this->repository->remove($formation, true);

@@ -17,14 +17,14 @@ class AdminPlaylistsController extends AbstractController {
         $this->repository = $repository;
     }
 
-    #[Route('/gestion/playlists', name: 'admin.playlists')]
+    #[Route('/admin/playlists', name: 'admin.playlists')]
     public function index(): Response {
         return $this->render("admin/admin.playlists.html.twig", [
             'playlists' => $this->repository->findAllOrderByName('ASC')
         ]);
     }
 
-    #[Route('/gestion/playlist/ajout', name: 'admin.playlist.ajout')]
+    #[Route('/admin/playlist/ajout', name: 'admin.playlist.ajout')]
     public function ajout(Request $request): Response {
         $playlist = new Playlist();
         $form = $this->createForm(PlaylistType::class, $playlist);
@@ -41,7 +41,7 @@ class AdminPlaylistsController extends AbstractController {
         ]);
     }
 
-    #[Route('/gestion/playlist/edit/{id}', name: 'admin.playlist.edit')]
+    #[Route('/admin/playlist/edit/{id}', name: 'admin.playlist.edit')]
     public function edit(Playlist $playlist, Request $request): Response {
         $form = $this->createForm(PlaylistType::class, $playlist);
         $form->handleRequest($request);
@@ -57,7 +57,7 @@ class AdminPlaylistsController extends AbstractController {
         ]);
     }
 
-    #[Route('/gestion/playlist/suppr/{id}', name: 'admin.playlist.suppr')]
+    #[Route('/admin/playlist/suppr/{id}', name: 'admin.playlist.suppr')]
     public function suppr(Playlist $playlist): Response {
         if ($playlist->getFormations()->count() > 0) {
             $this->addFlash('error', 'Impossible de supprimer une playlist contenant des formations.');
