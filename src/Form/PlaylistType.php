@@ -15,8 +15,7 @@ class PlaylistType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, ['label' => 'Nom'])
-            ->add('description', TextareaType::class, ['required' => false])
-            ->add('submit', SubmitType::class, ['label' => 'Enregistrer']);
+            ->add('description', TextareaType::class, ['required' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
