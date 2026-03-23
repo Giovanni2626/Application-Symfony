@@ -36,8 +36,8 @@ class FormationType extends AbstractType
                 'choice_label' => 'name',
                 'multiple' => true,
                 'required' => false
-            ])
-            ->add('submit', SubmitType::class, ['label' => 'Enregistrer']);
+            ]);
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void
