@@ -1,0 +1,25 @@
+{% extends "basefront.html.twig" %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2>{% if playlist.id %}Modifier{% else %}Ajouter{% endif %} la playlist</h2>
+
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.description) }}
+        <button type="submit" class="btn btn-success mt-2">Enregistrer</button>
+        <a href="{{ path('admin.playlists') }}" class="btn btn-secondary mt-2">Retour</a>
+    {{ form_end(form) }}
+
+    {% if playlist.id %}
+        <h3 class="mt-5">Formations rattachées</h3>
+        <ul class="list-group mt-3">
+            {% for formation in playlist.formations %}
+                <li class="list-group-item">{{ formation.title }}</li>
+            {% else %}
+                <li class="list-group-item text-muted">Aucune formation dans cette playlist.</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

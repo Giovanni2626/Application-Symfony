@@ -14,7 +14,14 @@
     <p>
         Voici les <strong>deux dernières formations</strong> ajoutées au catalogue :
         <table class="table">
-            <tr>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Détails</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
                 {% for formation in formations %}
                     <td>
                         <div class="row">
@@ -23,6 +30,7 @@
                                 {% if formation.picture %}
                                     <a href="{{ path('formations.showone', {id:formation.id}) }}">
                                     <img src="{{ formation.picture }}" 
+                                         alt="{{ formation.title }}"
                                          class="card-img-top" style="width:100%;height:auto;">
                                     </a>    
                                 {% endif %}

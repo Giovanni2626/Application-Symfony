@@ -5,8 +5,12 @@
             <tr>
                 <th class="text-left align-top" scope="col">
                     playlist<br />
-                    <a href="{{ path('playlists.sort', {champ:'name', ordre:'ASC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true"><</a>
-                    <a href="{{ path('playlists.sort', {champ:'name', ordre:'DESC'}) }}" class="btn btn-info btn-sm active" role="button" aria-pressed="true">></a>
+                    <form method="GET" action="{{ path('playlists.sort', {champ:'name', ordre:'ASC'}) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-info btn-sm active"><</button>
+                    </form>
+                    <form method="GET" action="{{ path('playlists.sort', {champ:'name', ordre:'DESC'}) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-info btn-sm active">></button>
+                    </form>
                     <form class="form-inline mt-1" method="POST" action="{{ path('playlists.findallcontain', {champ:'name'}) }}">
                         <div class="form-group mr-1 mb-2">
                             <input type="text" class="sm" name="recherche" 
@@ -14,7 +18,7 @@
                             <input type="hidden" name="_token" value="{{ csrf_token('filtre_name') }}">
                             <button type="submit" class="btn btn-info mb-2 btn-sm">filtrer</button>
                         </div>
-                    </form>                    
+                    </form>                     
                 </th>
                 <th class="text-left align-top" scope="col">
                     catégories
@@ -29,8 +33,17 @@
                                     value="{{ categorie.id }}">{{ categorie.name }}
                                 </option>
                             {% endfor %}
-                        </select>                    
-                    </form>            
+                        </select>                     
+                    </form>             
+                </th>
+                <th class="text-left align-top" scope="col">
+                    formations<br />
+                    <form method="GET" action="{{ path('playlists.sort', {champ:'nbFormations', ordre:'ASC'}) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-info btn-sm active"><</button>
+                    </form>
+                    <form method="GET" action="{{ path('playlists.sort', {champ:'nbFormations', ordre:'DESC'}) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-info btn-sm active">></button>
+                    </form>
                 </th>
                 <th class="text-center align-top" scope="col">
                     &nbsp;
@@ -38,7 +51,6 @@
             </tr>
         </thead>
         <tbody>
-            <!-- boucle sur les playlists -->
             {% if playlists|length > 0 %}
                 {% for k in 0..playlists|length-1 %}
                     <tr class="align-middle">
@@ -46,15 +58,18 @@
                             <h5 class="text-info">
                                 {{ playlists[k].name }}
                             </h5>
-                        </td>                 
+                        </td>                  
                         <td class="text-left">
                             {% set categories = playlists[k].categoriesplaylist %}
                             {% if categories|length > 0  %}
                                 {% for c in 0..categories|length-1 %}
-                                    &nbsp;{{ categories[c] }}                                  
+                                    &nbsp;{{ categories[c] }}                                     
                                 {% endfor %}
                             {% endif %}
-                        </td>            					
+                        </td>
+                        <td class="text-left">
+                            {{ playlists[k].formations|length }}
+                        </td>              					
                         <td class="text-center">
                             <a href="{{ path('playlists.showone', {id:playlists[k].id}) }}" class="btn btn-secondary">Voir détail</a>
                         </td> 					

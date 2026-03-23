@@ -22,9 +22,6 @@ class Playlist
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    /**
-     * @var Collection<int, Formation>
-     */
     #[ORM\OneToMany(targetEntity: Formation::class, mappedBy: 'playlist')]
     private Collection $formations;
 
@@ -46,7 +43,6 @@ class Playlist
     public function setName(?string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -58,7 +54,6 @@ class Playlist
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -70,42 +65,42 @@ class Playlist
         return $this->formations;
     }
 
+    public function getNbFormations(): int
+    {
+        return $this->formations->count();
+    }
+
     public function addFormation(Formation $formation): static
     {
         if (!$this->formations->contains($formation)) {
             $this->formations->add($formation);
             $formation->setPlaylist($this);
         }
-
         return $this;
     }
 
     public function removeFormation(Formation $formation): static
     {
-        if ($this->formations->removeElement($formation)) {
-            // set the owning side to null (unless already changed)
-            if ($formation->getPlaylist() === $this) {
-                $formation->setPlaylist(null);
-            }
+        if ($this->formations->removeElement($formation) && $formation->getPlaylist() === $this) {
+            $formation->setPlaylist(null);
         }
-
         return $this;
     }
-    
+
     /**
      * @return Collection<int, string>
      */
-    public function getCategoriesPlaylist() : Collection
+    public function getCategoriesPlaylist(): Collection
     {
-        $categories = new ArrayCollection();
-        foreach($this->formations as $formation){
-            $categoriesFormation = $formation->getCategories();
-            foreach($categoriesFormation as $categorieFormation)
-            if(!$categories->contains($categorieFormation->getName())){
-                $categories[] = $categorieFormation->getName();
+        $categoriesNames = [];
+        foreach ($this->formations as $formation) {
+            foreach ($formation->getCategories() as $category) {
+                $name = $category->getName();
+                if (!in_array($name, $categoriesNames)) {
+                    $categoriesNames[] = $name;
+                }
             }
         }
-        return $categories;
+        return new ArrayCollection($categoriesNames);
     }
-        
 }

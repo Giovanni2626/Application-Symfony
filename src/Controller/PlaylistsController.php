@@ -9,32 +9,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Description of PlaylistsController
- *
- * @author emds
- */
 class PlaylistsController extends AbstractController {
-    
-    /**
-     * 
-     * @var PlaylistRepository
-     */
+
+    private const PLAYLISTS_TEMPLATE = "pages/playlists.html.twig";
     private $playlistRepository;
-    
-    /**
-     * 
-     * @var FormationRepository
-     */
     private $formationRepository;
+    private $categorieRepository;
     
-    /**
-     * 
-     * @var CategorieRepository
-     */
-    private $categorieRepository;    
-    
-    function __construct(PlaylistRepository $playlistRepository, 
+    public function __construct(PlaylistRepository $playlistRepository, 
             CategorieRepository $categorieRepository,
             FormationRepository $formationRespository) {
         $this->playlistRepository = $playlistRepository;
@@ -42,46 +24,45 @@ class PlaylistsController extends AbstractController {
         $this->formationRepository = $formationRespository;
     }
     
-    /**
-     * @Route("/playlists", name="playlists")
-     * @return Response
-     */
     #[Route('/playlists', name: 'playlists')]
     public function index(): Response{
         $playlists = $this->playlistRepository->findAllOrderByName('ASC');
         $categories = $this->categorieRepository->findAll();
-        return $this->render("pages/playlists.html.twig", [
+        return $this->render(self::PLAYLISTS_TEMPLATE, [
             'playlists' => $playlists,
-            'categories' => $categories            
+            'categories' => $categories
         ]);
     }
 
-    #[Route('/playlists/tri/{champ}/{ordre}', name: 'playlists.sort')]
+     #[Route('/playlists/tri/{champ}/{ordre}', name: 'playlists.sort')]
     public function sort($champ, $ordre): Response{
-        switch($champ){
-            case "name":
-                $playlists = $this->playlistRepository->findAllOrderByName($ordre);
-                break;
+        if ($champ === "name") {
+            $playlists = $this->playlistRepository->findAllOrderByName($ordre);
+        } elseif ($champ === "nbFormations") {
+            $playlists = $this->playlistRepository->findAllOrderByNbFormations($ordre);
+        } else {
+            $playlists = $this->playlistRepository->findAllOrderByName('ASC');
         }
+        
         $categories = $this->categorieRepository->findAll();
-        return $this->render("pages/playlists.html.twig", [
+        return $this->render(self::PLAYLISTS_TEMPLATE, [
             'playlists' => $playlists,
-            'categories' => $categories            
+            'categories' => $categories
         ]);
-    }          
+    }
 
     #[Route('/playlists/recherche/{champ}/{table}', name: 'playlists.findallcontain')]
     public function findAllContain($champ, Request $request, $table=""): Response{
         $valeur = $request->get("recherche");
         $playlists = $this->playlistRepository->findByContainValue($champ, $valeur, $table);
         $categories = $this->categorieRepository->findAll();
-        return $this->render("pages/playlists.html.twig", [
+        return $this->render(self::PLAYLISTS_TEMPLATE, [
             'playlists' => $playlists,
-            'categories' => $categories,            
+            'categories' => $categories,
             'valeur' => $valeur,
             'table' => $table
         ]);
-    }  
+    }
 
     #[Route('/playlists/playlist/{id}', name: 'playlists.showone')]
     public function showOne($id): Response{
@@ -92,7 +73,6 @@ class PlaylistsController extends AbstractController {
             'playlist' => $playlist,
             'playlistcategories' => $playlistCategories,
             'playlistformations' => $playlistFormations
-        ]);        
-    }       
-    
+        ]);
+    }
 }
