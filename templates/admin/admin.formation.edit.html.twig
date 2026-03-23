@@ -1,0 +1,53 @@
+{% extends "basefront.html.twig" %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2 class="mb-4">
+        {% if formation.id is defined and formation.id is not null %}
+            Modifier la formation : {{ formation.title }}
+        {% else %}
+            Ajouter une nouvelle formation
+        {% endif %}
+    </h2>
+
+    <div class="card p-4 shadow-sm">
+        {% if form is defined %}
+            {{ form_start(form) }}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.title) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.publishedAt) }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.description) }}
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    {{ form_row(form.videoId) }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form_row(form.playlist) }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form_row(form.categories) }}
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success">Enregistrer</button>
+                <a href="{{ path('admin.formations') }}" class="btn btn-secondary">Annuler</a>
+            </div>
+
+            {{ form_end(form) }}
+        {% else %}
+            <div class="alert alert-danger">Erreur : Le formulaire n'a pas pu être chargé.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
