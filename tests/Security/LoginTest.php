@@ -38,4 +38,18 @@ public function testFindByTitle(): void
     
     $this->assertGreaterThanOrEqual(0, count($formations));
 }
+public function testLinkToDetails(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/formations');
+        
+        $titleExpected = $crawler->filter('table tbody tr h5')->first()->text();
+
+        $link = $crawler->filter('table tbody tr td a')->first()->link();
+        $client->click($link);
+
+        $this->assertResponseIsSuccessful();
+       
+        $this->assertSelectorTextContains('h4', trim($titleExpected));
+    }
 }
