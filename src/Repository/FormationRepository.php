@@ -107,5 +107,14 @@ class FormationRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
     }
+    public function findAllByTitle($title): array
+{
+    return $this->createQueryBuilder('f')
+        ->where('f.title LIKE :val')
+        ->setParameter('val', '%'.$title.'%')
+        ->orderBy('f.publishedAt', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
     
 }
