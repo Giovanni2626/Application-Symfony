@@ -1,4 +1,5 @@
 {% extends "basefront.html.twig" %}
+
 {% block body %}
     <table class="table table-striped">
         <thead>
@@ -6,27 +7,27 @@
                 <th class="text-left align-top" scope="col">
                     formation<br />
                     <form method="GET" action="{{ path('formations.sort', {champ:'title', ordre:'ASC'}) }}" style="display:inline;">
-                        <button type="submit" class="btn btn-info btn-sm active" aria-pressed="true"><</button>
+                        <button type="submit" name="sort_title_asc" class="btn btn-info btn-sm active" aria-pressed="true">&lt;</button>
                     </form>
                     <form method="GET" action="{{ path('formations.sort', {champ:'title', ordre:'DESC'}) }}" style="display:inline;">
-                        <button type="submit" class="btn btn-info btn-sm active" aria-pressed="true">></button>
+                        <button type="submit" name="sort_title_desc" class="btn btn-info btn-sm active" aria-pressed="true">&gt;</button>
                     </form>
                     <form class="form-inline mt-1" method="POST" action="{{ path('formations.findallcontain', {champ:'title'}) }}">
                         <div class="form-group mr-1 mb-2">
-                            <input type="text" class="sm" name="recherche" 
+                            <input type="text" class="sm" name="recherche" id="recherche_title"
                                    value="{% if valeur|default and not table|default %}{{ valeur }}{% endif %}">
                             <input type="hidden" name="_token" value="{{ csrf_token('filtre_title') }}">
                             <button type="submit" class="btn btn-info mb-2 btn-sm">filtrer</button>
                         </div>
-                    </form>                    
+                    </form>                     
                 </th>
                 <th class="text-left align-top" scope="col">
                     playlist<br />
                     <form method="GET" action="{{ path('formations.sort', {table:'playlist', champ:'name', ordre:'ASC'}) }}" style="display:inline;">
-                        <button type="submit" class="btn btn-info btn-sm active" aria-pressed="true"><</button>
+                        <button type="submit" class="btn btn-info btn-sm active" aria-pressed="true">&lt;</button>
                     </form>
                     <form method="GET" action="{{ path('formations.sort', {table:'playlist', champ:'name', ordre:'DESC'}) }}" style="display:inline;">
-                        <button type="submit" class="btn btn-info btn-sm active" aria-pressed="true">></button>
+                        <button type="submit" class="btn btn-info btn-sm active" aria-pressed="true">&gt;</button>
                     </form>
                     <form class="form-inline mt-1" method="POST" action="{{ path('formations.findallcontain', {champ:'name', table:'playlist'}) }}">
                         <div class="form-group mr-1 mb-2">
@@ -35,12 +36,12 @@
                             <input type="hidden" name="_token" value="{{ csrf_token('filtre_name') }}">
                             <button type="submit" class="btn btn-info mb-2 btn-sm">filtrer</button>
                         </div>
-                    </form>                    
+                    </form>                     
                 </th>
                 <th class="text-left align-top" scope="col">
                     catégories
                     <form class="form-inline mt-1" method="POST" action="{{ path('formations.findallcontain', {champ:'id', table:'categories'}) }}">
-                        <select class="form-select form-select-sm" name="recherche" id="recherche" onchange="this.form.submit()">
+                        <select class="form-select form-select-sm" name="recherche" id="recherche_categorie" onchange="this.form.submit()">
                             <option value=""></option>
                             {% for categorie in categories %}
                                 <option 
@@ -50,17 +51,17 @@
                                     value="{{ categorie.id }}">{{ categorie.name }}
                                 </option>
                             {% endfor %}
-                        </select>                    
-                    </form>            
+                        </select>                     
+                    </form>             
                 </th>
                 <th class="text-center align-top" scope="col">
                     date<br />
                     <form method="GET" action="{{ path('formations.sort', {champ:'publishedAt', ordre:'ASC'}) }}" style="display:inline;">
-                        <button type="submit" class="btn btn-info btn-sm active"><</button>
+                        <button type="submit" class="btn btn-info btn-sm active">&lt;</button>
                     </form>
                     <form method="GET" action="{{ path('formations.sort', {champ:'publishedAt', ordre:'DESC'}) }}" style="display:inline;">
-                        <button type="submit" class="btn btn-info btn-sm active">></button>
-                    </form>                    
+                        <button type="submit" class="btn btn-info btn-sm active">&gt;</button>
+                    </form>                     
                 </th>
                 <th class="text-center align-top" scope="col">
                     &nbsp;
@@ -76,13 +77,13 @@
                         </h5>
                     </td>
                     <td class="text-left">
-                        {{ formation.playlist.name }}                  
-                    </td>                    
+                        {{ formation.playlist ? formation.playlist.name : '' }}                  
+                    </td>                     
                     <td class="text-left">
                         {% for categorie in formation.categories %}
                             {{ categorie.name }}<br />
                         {% endfor %}
-                    </td>                    
+                    </td>                     
                     <td class="text-center">
                         {{ formation.publishedatstring }}
                     </td>
