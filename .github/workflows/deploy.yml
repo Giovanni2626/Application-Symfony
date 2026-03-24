@@ -1,0 +1,33 @@
+name: Deploy to Alwaysdata
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy via SSH (rsync)
+        uses: Burnett01/rsync-deployments@7.0.0
+        with:
+          switches: -avzr --delete --exclude='.env' --exclude='var/cache/' --exclude='public/uploads/'
+          path: ./
+          remote_path: /home/${{ secrets.SSH_USER }}/www/mediatekformation/
+          remote_host: ${{ secrets.SSH_HOST }}
+          remote_user: ${{ secrets.SSH_USER }}
+          remote_key: ${{ secrets.SSH_PASSWORD }}
+
+      - name: Clear Symfony Cache
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd /home/${{ secrets.SSH_USER }}/www/mediatekformation/
+            rm -rf var/cache/*
