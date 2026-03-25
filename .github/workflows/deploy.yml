@@ -1,0 +1,40 @@
+name: Deploy to Alwaysdata
+
+on:
+  push:
+    branches:
+      - master  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Copy files via SCP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "."
+          target: "/home/${{ secrets.SSH_USER }}/www/mediatekformation/"
+          rm: false
+          exclude: |
+            .git/
+            .github/
+            var/cache/
+            .env
+            vendor/
+            public/uploads/
+
+      - name: Clear Symfony Cache
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd /home/${{ secrets.SSH_USER }}/www/mediatekformation/
+            rm -rf var/cache/*
