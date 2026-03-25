@@ -69,6 +69,6 @@ L'application est déployée en production à l'adresse suivante :
 
 ### Éléments à tester :
 * **Navigation Front-Office** : Vérification des tris et filtres sur les formations et playlists.
-* **Accès sécurisé** : Tentative d'accès à l'URL `/admin` (redirection vers le login).
+* **Accès sécurisé** : Tentative d'accès à l'URL `/login`.
 * **Déploiement Continu** : Le site bénéficie d'une mise à jour automatique via **GitHub Actions** à chaque mise à jour du code source.
 * **Sauvegardes** : Un système de sauvegarde automatisée a été configuré pour sécuriser la base de données quotidiennement.
