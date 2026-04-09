@@ -22,23 +22,27 @@ En plus des fonctionnalités de consultation (Accueil, Formations, Playlists, CG
 ### 🎬 Gestion des Formations
 * **CRUD Complet** : Ajout, modification et suppression des formations.
 * **Validation des données** : Contrôle strict des champs (titre, lien YouTube, date) pour assurer la cohérence de la base.
-
-![Capture Ecran](doc-images/gestionformations.png)
+![Capture Ecran](doc-images/formations.png)
 ![Capture Ecran](doc-images/modifierformation.png)
 ![Capture Ecran](doc-images/ajouterformation.png)
+![Capture Ecran](doc-images/supprimerformation.png)
 
 ### 📂 Gestion des Playlists
 * **Édition des playlists** : Possibilité de créer ou modifier les noms et descriptions des playlists.
 * **Gestion des liens** : Mise à jour des formations rattachées à chaque playlist.
 
-![Capture Ecran](doc-images/gestionplaylists.png)
+![Capture Ecran](doc-images/playlists.png)
 ![Capture Ecran](doc-images/modifierplaylist.png)
 ![Capture Ecran](doc-images/ajouterplaylist.png)
+![Capture Ecran](doc-images/supprimerplaylist.png)
 
 ### 🏷️ Gestion des Catégories
 * **Organisation dynamique** : Ajout et suppression des catégories (ex: Java, PHP, Design) pour organiser les contenus de formation.
 
-![Capture Ecran](doc-images/gestioncatégories.png)
+![Capture Ecran](doc-images/catégories.png)
+![Capture Ecran](doc-images/ajoutercatégorie.png)
+![Capture Ecran](doc-images/supprimercatégorie.png)
+![Capture Ecran](doc-images/catégoriesupprimée.png)
 
 ---
 
