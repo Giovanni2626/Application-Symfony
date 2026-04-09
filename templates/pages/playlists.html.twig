@@ -2,7 +2,6 @@
 
 {% block body %}
 <div class="container-fluid mt-4">
-    {# En-tête #}
     <div class="d-flex justify-content-between align-items-center mb-4 pb-3">
         <h2 class="text-secondary fw-light m-0">Playlists</h2>
         {% if is_granted('ROLE_ADMIN') %}
@@ -12,12 +11,23 @@
         {% endif %}
     </div>
 
+   
+    {% set champ = app.request.get('champ') %}
+    {% set ordre = app.request.get('ordre') %}
+    {% set listePlaylists = playlists|default([]) %}
+
+    {% if champ == 'nbformations' %}
+        {% set listePlaylists = listePlaylists|sort((a, b) => ordre == 'ASC' 
+            ? a.formations|length <=> b.formations|length 
+            : b.formations|length <=> a.formations|length) 
+        %}
+    {% endif %}
+
     <div class="table-responsive">
         <table class="table table-hover align-middle bg-white">
             <thead class="bg-light">
                 <tr class="text-uppercase small text-muted border-bottom" style="font-size: 0.75rem; letter-spacing: 0.05em;">
                     
-                    {# COLONNE PLAYLIST (Tri conservé et visible) #}
                     <th class="py-3 border-0">
                         <span class="d-block mb-1">Playlist</span>
                         <div class="d-flex align-items-center">
@@ -32,7 +42,6 @@
                         </div>
                     </th>
 
-                    {# COLONNE CATÉGORIES #}
                     <th class="py-3 border-0">
                         <span class="d-block mb-1">Catégories</span>
                         <form method="POST" action="{{ path('playlists.findallcontain', {champ:'id', table:'categories'}) }}">
@@ -47,17 +56,21 @@
                         </form>
                     </th>
 
-                    {# COLONNE NOMBRE DE FORMATIONS (Tri supprimé) #}
                     <th class="py-3 border-0 text-center">
                         <span class="d-block mb-1">Formations</span>
-                        <div class="text-muted small fw-normal">Total</div>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="d-flex flex-column">
+                                <a href="{{ path('playlists.sort', {champ:'nbformations', ordre:'ASC'}) }}" class="sort-arrow">▲</a>
+                                <a href="{{ path('playlists.sort', {champ:'nbformations', ordre:'DESC'}) }}" class="sort-arrow">▼</a>
+                            </div>
+                        </div>
                     </th>
 
                     <th class="py-3 border-0 text-end px-4">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for playlist in playlists|default([]) %}
+                {% for playlist in listePlaylists %}
                     <tr class="border-light">
                         <td class="py-3">
                             <a href="{{ path('playlists.showone', {id:playlist.id}) }}" class="text-decoration-none fw-bold" style="color: #4ebbe4; font-size: 0.95rem;">
@@ -80,7 +93,7 @@
                                     <a href="{{ path('admin.playlist.edit', {id:playlist.id}) }}" class="text-muted small text-decoration-none mb-0">Modifier</a>
                                     <form method="POST" action="{{ path('admin.playlist.suppr', {id:playlist.id}) }}" onsubmit="return confirm('Supprimer ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ playlist.id) }}">
-                                        <button type="submit" class="btn btn-link p-0 text-danger text-decoration-none small m-0" style="font-size: 0.85rem;">Supprimer</button>
+                                        <button type="submit" class="btn btn-link p-0 text-danger text-decoration-none small m-0">Supprimer</button>
                                     </form>
                                 {% else %}
                                     <a href="{{ path('playlists.showone', {id:playlist.id}) }}" class="text-muted small text-decoration-none">Voir</a>
@@ -96,20 +109,20 @@
 
 <style>
     .sort-arrow {
-        font-size: 0.95rem;
-        line-height: 0.7;
+        font-size: 0.75rem;
+        line-height: 0.8;
         color: #4ebbe4;
         text-decoration: none !important;
         display: block;
-        padding: 2px 0;
-        transition: transform 0.1s ease;
+        padding: 1px 0;
+        
     }
+    
     .sort-arrow:hover { 
         color: #358fb1; 
-        transform: scale(1.3);
     }
+
     .btn-info { background-color: #4ebbe4 !important; border: none; }
     .table thead th { background-color: #f8f9fa; vertical-align: top; }
-    .badge { border: 1px solid #eee !important; }
 </style>
 {% endblock %}

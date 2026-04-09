@@ -16,8 +16,8 @@ En plus des fonctionnalités de consultation (Accueil, Formations, Playlists, CG
 * **Formulaire de connexion** : Système d'authentification robuste via le composant Security de Symfony.
 
 ![Capture Ecran](doc-images/accueil.png)
-![Capture Ecran](doc-images/formationssansadmin.png)
-![Capture Ecran](doc-images/playlistssansadmin.png)
+![Capture Ecran](doc-images/formationsdeconnecter.png)
+![Capture Ecran](doc-images/playlistsdeconnecter.png)
 ![Capture Ecran](doc-images/connexion.png)
 ![Capture Ecran](doc-images/connecté.png)
 
