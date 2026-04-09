@@ -28,6 +28,7 @@
             <thead class="bg-light">
                 <tr class="text-uppercase small text-muted border-bottom" style="font-size: 0.75rem; letter-spacing: 0.05em;">
                     
+                    {# COLONNE PLAYLIST #}
                     <th class="py-3 border-0">
                         <span class="d-block mb-1">Playlist</span>
                         <div class="d-flex align-items-center">
@@ -36,19 +37,23 @@
                                 <a href="{{ path('playlists.sort', {champ:'name', ordre:'DESC'}) }}" class="sort-arrow">▼</a>
                             </div>
                             <form method="POST" action="{{ path('playlists.findallcontain', {champ:'name'}) }}" class="input-group input-group-sm" style="width: 200px;">
-                                <input type="text" name="recherche" class="form-control form-control-sm bg-white border shadow-none" value="{{ valeur|default('') }}">
+                                
+                                <input type="text" name="recherche" class="form-control form-control-sm bg-white border shadow-none" 
+                                       value="{{ app.request.get('table') != 'categories' ? valeur|default('') : '' }}">
                                 <button type="submit" class="btn btn-info btn-sm text-white px-2 border-0">filtrer</button>
                             </form>
                         </div>
                     </th>
 
+                    {# COLONNE CATEGORIES #}
                     <th class="py-3 border-0">
                         <span class="d-block mb-1">Catégories</span>
                         <form method="POST" action="{{ path('playlists.findallcontain', {champ:'id', table:'categories'}) }}">
                             <select name="recherche" class="form-select form-select-sm bg-white border shadow-none" onchange="this.form.submit()" style="width: 180px;">
                                 <option value=""></option>
                                 {% for categorie in categories|default([]) %}
-                                    <option value="{{ categorie.id }}" {% if valeur|default('') == categorie.id %}selected{% endif %}>
+                                   
+                                    <option value="{{ categorie.id }}" {% if app.request.get('table') == 'categories' and valeur|default('') == categorie.id %}selected{% endif %}>
                                         {{ categorie.name }}
                                     </option>
                                 {% endfor %}
