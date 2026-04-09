@@ -2,46 +2,62 @@
 
 {% block body %}
 <div class="container mt-4">
-    <h2 class="mb-4">
-        {% if formation.id is defined and formation.id is not null %}
-            Modifier la formation : {{ formation.title }}
-        {% else %}
-            Ajouter une nouvelle formation
-        {% endif %}
-    </h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-secondary fw-bold">
+            {% if formation.id is defined and formation.id is not null %}
+                Modifier la formation
+            {% else %}
+                Ajouter une formation
+            {% endif %}
+        </h2>
+        <a href="{{ path('formations') }}" class="btn btn-warning text-white fw-bold shadow-sm">
+            <i class="fa fa-arrow-left"></i> Retour aux formations
+        </a>
+    </div>
 
-    <div class="card p-4 shadow-sm">
+    <div class="p-4 shadow-sm" style="background-color: #ededed; border-radius: 10px;">
         {% if form is defined %}
             {{ form_start(form) }}
             
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    {{ form_row(form.title) }}
+            {# Ligne 1 : Date, Title, Video ID #}
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold">Date</label>
+                    {{ form_widget(form.publishedAt, {'attr': {'class': 'form-control bg-white border-0', 'style': 'padding: 0.6rem;'}}) }}
                 </div>
-                <div class="col-md-6 mb-3">
-                    {{ form_row(form.publishedAt) }}
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold">Title</label>
+                    {{ form_widget(form.title, {'attr': {'class': 'form-control bg-white border-0', 'placeholder': 'Titre', 'style': 'padding: 0.6rem;'}}) }}
                 </div>
-            </div>
-
-            <div class="mb-3">
-                {{ form_row(form.description) }}
-            </div>
-
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    {{ form_row(form.videoId) }}
-                </div>
-                <div class="col-md-4 mb-3">
-                    {{ form_row(form.playlist) }}
-                </div>
-                <div class="col-md-4 mb-3">
-                    {{ form_row(form.categories) }}
+                <div class="col-md-4">
+                    <label class="form-label text-muted small fw-bold">Video id</label>
+                    {{ form_widget(form.videoId, {'attr': {'class': 'form-control bg-white border-0', 'placeholder': 'ID de la vidéo', 'style': 'padding: 0.6rem;'}}) }}
                 </div>
             </div>
 
+            {# Ligne 2 : Description #}
             <div class="mt-4">
-                <button type="submit" class="btn btn-success">Enregistrer</button>
-                <a href="{{ path('admin.formations') }}" class="btn btn-secondary">Annuler</a>
+                <label class="form-label text-muted small fw-bold">Description</label>
+                {{ form_widget(form.description, {'attr': {'class': 'form-control bg-white border-0', 'placeholder': 'Description', 'rows': '4'}}) }}
+            </div>
+
+            {# Ligne 3 : Playlist #}
+            <div class="mt-4">
+                <label class="form-label text-muted small fw-bold">Playlist</label>
+                {{ form_widget(form.playlist, {'attr': {'class': 'form-select bg-white border-0'}}) }}
+            </div>
+
+            {# Ligne 4 : Catégories #}
+            <div class="mt-4">
+                <label class="form-label text-muted small fw-bold">Categories</label>
+                {{ form_widget(form.categories, {'attr': {'class': 'form-control bg-white border-0', 'style': 'height: 150px;'}}) }}
+            </div>
+
+            {# Bouton de validation #}
+            <div class="mt-4">
+                <button type="submit" class="btn btn-success px-5 py-2 fw-bold shadow-sm" style="border-radius: 5px;">
+                    Valider
+                </button>
             </div>
 
             {{ form_end(form) }}

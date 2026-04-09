@@ -1,81 +1,115 @@
 {% extends "basefront.html.twig" %}
+
 {% block body %}
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th class="text-left align-top" scope="col">
-                    playlist<br />
-                    <form method="GET" action="{{ path('playlists.sort', {champ:'name', ordre:'ASC'}) }}" style="display:inline;">
-                        <button type="submit" class="btn btn-info btn-sm active"><</button>
-                    </form>
-                    <form method="GET" action="{{ path('playlists.sort', {champ:'name', ordre:'DESC'}) }}" style="display:inline;">
-                        <button type="submit" class="btn btn-info btn-sm active">></button>
-                    </form>
-                    <form class="form-inline mt-1" method="POST" action="{{ path('playlists.findallcontain', {champ:'name'}) }}">
-                        <div class="form-group mr-1 mb-2">
-                            <input type="text" class="sm" name="recherche" 
-                                   value="{% if valeur|default and not table|default %}{{ valeur }}{% endif %}">
-                            <input type="hidden" name="_token" value="{{ csrf_token('filtre_name') }}">
-                            <button type="submit" class="btn btn-info mb-2 btn-sm">filtrer</button>
+<div class="container-fluid mt-4">
+    {# En-tête #}
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3">
+        <h2 class="text-secondary fw-light m-0">Playlists</h2>
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('admin.playlist.ajout') }}" class="btn btn-outline-success border-2 fw-bold">
+                + AJOUTER
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle bg-white">
+            <thead class="bg-light">
+                <tr class="text-uppercase small text-muted border-bottom" style="font-size: 0.75rem; letter-spacing: 0.05em;">
+                    
+                    {# COLONNE PLAYLIST (Tri conservé et visible) #}
+                    <th class="py-3 border-0">
+                        <span class="d-block mb-1">Playlist</span>
+                        <div class="d-flex align-items-center">
+                            <div class="d-flex flex-column me-3">
+                                <a href="{{ path('playlists.sort', {champ:'name', ordre:'ASC'}) }}" class="sort-arrow">▲</a>
+                                <a href="{{ path('playlists.sort', {champ:'name', ordre:'DESC'}) }}" class="sort-arrow">▼</a>
+                            </div>
+                            <form method="POST" action="{{ path('playlists.findallcontain', {champ:'name'}) }}" class="input-group input-group-sm" style="width: 200px;">
+                                <input type="text" name="recherche" class="form-control form-control-sm bg-white border shadow-none" value="{{ valeur|default('') }}">
+                                <button type="submit" class="btn btn-info btn-sm text-white px-2 border-0">filtrer</button>
+                            </form>
                         </div>
-                    </form>                     
-                </th>
-                <th class="text-left align-top" scope="col">
-                    catégories
-                    <form class="form-inline mt-1" method="POST" action="{{ path('playlists.findallcontain', {champ:'id', table:'categories'}) }}">
-                        <select class="form-select form-select-sm" name="recherche" id="recherche" onchange="this.form.submit()">
-                            <option value=""></option>
-                            {% for categorie in categories %}
-                                <option 
-                                    {% if valeur|default and valeur==categorie.id %} 
-                                        selected
-                                    {% endif %} 
-                                    value="{{ categorie.id }}">{{ categorie.name }}
-                                </option>
-                            {% endfor %}
-                        </select>                     
-                    </form>             
-                </th>
-                <th class="text-left align-top" scope="col">
-                    formations<br />
-                    <form method="GET" action="{{ path('playlists.sort', {champ:'nbFormations', ordre:'ASC'}) }}" style="display:inline;">
-                        <button type="submit" class="btn btn-info btn-sm active"><</button>
-                    </form>
-                    <form method="GET" action="{{ path('playlists.sort', {champ:'nbFormations', ordre:'DESC'}) }}" style="display:inline;">
-                        <button type="submit" class="btn btn-info btn-sm active">></button>
-                    </form>
-                </th>
-                <th class="text-center align-top" scope="col">
-                    &nbsp;
-                </th>				
-            </tr>
-        </thead>
-        <tbody>
-            {% if playlists|length > 0 %}
-                {% for k in 0..playlists|length-1 %}
-                    <tr class="align-middle">
-                        <td>
-                            <h5 class="text-info">
-                                {{ playlists[k].name }}
-                            </h5>
-                        </td>                  
-                        <td class="text-left">
-                            {% set categories = playlists[k].categoriesplaylist %}
-                            {% if categories|length > 0  %}
-                                {% for c in 0..categories|length-1 %}
-                                    &nbsp;{{ categories[c] }}                                     
+                    </th>
+
+                    {# COLONNE CATÉGORIES #}
+                    <th class="py-3 border-0">
+                        <span class="d-block mb-1">Catégories</span>
+                        <form method="POST" action="{{ path('playlists.findallcontain', {champ:'id', table:'categories'}) }}">
+                            <select name="recherche" class="form-select form-select-sm bg-white border shadow-none" onchange="this.form.submit()" style="width: 180px;">
+                                <option value=""></option>
+                                {% for categorie in categories|default([]) %}
+                                    <option value="{{ categorie.id }}" {% if valeur|default('') == categorie.id %}selected{% endif %}>
+                                        {{ categorie.name }}
+                                    </option>
                                 {% endfor %}
-                            {% endif %}
+                            </select>
+                        </form>
+                    </th>
+
+                    {# COLONNE NOMBRE DE FORMATIONS (Tri supprimé) #}
+                    <th class="py-3 border-0 text-center">
+                        <span class="d-block mb-1">Formations</span>
+                        <div class="text-muted small fw-normal">Total</div>
+                    </th>
+
+                    <th class="py-3 border-0 text-end px-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for playlist in playlists|default([]) %}
+                    <tr class="border-light">
+                        <td class="py-3">
+                            <a href="{{ path('playlists.showone', {id:playlist.id}) }}" class="text-decoration-none fw-bold" style="color: #4ebbe4; font-size: 0.95rem;">
+                                {{ playlist.name }}
+                            </a>
                         </td>
-                        <td class="text-left">
-                            {{ playlists[k].formations|length }}
-                        </td>              					
-                        <td class="text-center">
-                            <a href="{{ path('playlists.showone', {id:playlists[k].id}) }}" class="btn btn-secondary">Voir détail</a>
-                        </td> 					
+                        <td>
+                            {% for catName in playlist.categoriesPlaylist|default([]) %}
+                                <span class="badge rounded-pill bg-light text-secondary border-0 px-2 py-1 me-1" style="font-size: 0.7rem; font-weight: normal;">
+                                    {{ catName }}
+                                </span>
+                            {% endfor %}
+                        </td>
+                        <td class="text-center text-muted fw-bold">
+                            {{ playlist.formations|length }}
+                        </td>
+                        <td class="text-end px-4">
+                            <div class="d-flex flex-column align-items-end">
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('admin.playlist.edit', {id:playlist.id}) }}" class="text-muted small text-decoration-none mb-0">Modifier</a>
+                                    <form method="POST" action="{{ path('admin.playlist.suppr', {id:playlist.id}) }}" onsubmit="return confirm('Supprimer ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ playlist.id) }}">
+                                        <button type="submit" class="btn btn-link p-0 text-danger text-decoration-none small m-0" style="font-size: 0.85rem;">Supprimer</button>
+                                    </form>
+                                {% else %}
+                                    <a href="{{ path('playlists.showone', {id:playlist.id}) }}" class="text-muted small text-decoration-none">Voir</a>
+                                {% endif %}
+                            </div>
+                        </td>
                     </tr>
-                {% endfor %}	
-            {% endif %}
-        </tbody>
-    </table>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .sort-arrow {
+        font-size: 0.95rem;
+        line-height: 0.7;
+        color: #4ebbe4;
+        text-decoration: none !important;
+        display: block;
+        padding: 2px 0;
+        transition: transform 0.1s ease;
+    }
+    .sort-arrow:hover { 
+        color: #358fb1; 
+        transform: scale(1.3);
+    }
+    .btn-info { background-color: #4ebbe4 !important; border: none; }
+    .table thead th { background-color: #f8f9fa; vertical-align: top; }
+    .badge { border: 1px solid #eee !important; }
+</style>
 {% endblock %}

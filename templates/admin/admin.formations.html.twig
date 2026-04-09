@@ -2,54 +2,67 @@
 
 {% block body %}
 <div class="container mt-4">
-    <div class="row">
-        <div class="col-md-6">
-            <h2>Gestion des Formations</h2>
-        </div>
-        <div class="col-md-6 text-end">
-            <a href="{{ path('admin.formation.ajout') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Ajouter une formation
-            </a>
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-secondary fw-bold" style="font-size: 1.8rem;">Gestion des formations</h2>
+        <a href="{{ path('admin.formation.ajout') }}" class="btn btn-success px-4" style="background-color: #438f63; border: none;">
+            Ajouter une formation
+        </a>
     </div>
 
-    <table class="table table-striped table-hover mt-3">
-        <thead class="table-dark">
-            <tr>
-                <th scope="col">Formation</th>
-                <th scope="col">Playlist</th>
-                <th scope="col">Date</th>
-                <th scope="col" class="text-center">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for formation in formations %}
-                <tr class="align-middle">
-                    <td>
-                        <strong>{{ formation.title }}</strong>
-                    </td>
-                    <td>
-                        {{ formation.playlist.name|default('Aucune') }}
-                    </td>
-                    <td>
-                        {{ formation.publishedAt|date('d/m/Y') }}
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ path('admin.formation.edit', {id:formation.id}) }}" 
-                           class="btn btn-warning btn-sm">
-                            Modifier
-                        </a>
-
-                        <form method="POST" action="{{ path('admin.formation.suppr', {id:formation.id}) }}" 
-                              style="display:inline-block" 
-                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer la formation : {{ formation.title }} ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ formation.id) }}">
-                            <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-                        </form>
-                    </td>
+    <div class="table-responsive">
+        <table class="table align-middle" style="background-color: white;">
+            <thead>
+                <tr class="text-muted small border-bottom border-dark">
+                    <th scope="col" class="border-0 p-3">FORMATION</th>
+                    <th scope="col" class="border-0 p-3">PLAYLIST</th>
+                    <th scope="col" class="border-0 p-3 text-center">DATE</th>
+                    <th scope="col" class="border-0 p-3 text-end">ACTIONS</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for formation in formations %}
+                    <tr class="border-bottom">
+                        <td class="p-3">
+                            {# Lien bleu vers le détail de la formation #}
+                            <a href="{{ path('formations.showone', {id:formation.id}) }}" 
+                               class="fw-bold text-decoration-none" 
+                               style="color: #4ebbe4;">
+                                {{ formation.title }}
+                            </a>
+                        </td>
+                        <td class="p-3 text-secondary">
+                            <span class="badge bg-light text-secondary border px-2 py-1" style="font-weight: normal;">
+                                {{ formation.playlist.name|default('Aucune') }}
+                            </span>
+                        </td>
+                        <td class="p-3 text-center text-muted small">
+                            {{ formation.publishedAt ? formation.publishedAt|date('d/m/Y') : '' }}
+                        </td>
+                        <td class="p-3 text-end">
+                            {# Actions : Modifier (gris) et Supprimer (rouge) sans fond #}
+                            <a href="{{ path('admin.formation.edit', {id:formation.id}) }}" 
+                               class="text-decoration-none text-muted small me-3">
+                                Modifier
+                            </a>
+
+                            <form method="POST" action="{{ path('admin.formation.suppr', {id:formation.id}) }}" 
+                                  style="display:inline-block" 
+                                  onsubmit="return confirm('Supprimer la formation : {{ formation.title|escape('js') }} ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ formation.id) }}">
+                                <button type="submit" class="btn btn-link p-0 text-decoration-none small" 
+                                        style="color: #d9534f; font-size: inherit;">
+                                    Supprimer
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center p-5 text-muted">Aucune formation trouvée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
