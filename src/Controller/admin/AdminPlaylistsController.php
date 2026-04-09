@@ -17,13 +17,6 @@ class AdminPlaylistsController extends AbstractController {
         $this->repository = $repository;
     }
 
-    #[Route('/admin/playlists', name: 'admin.playlists')]
-    public function index(): Response {
-        return $this->render("admin/admin.playlists.html.twig", [
-            'playlists' => $this->repository->findAllOrderByName('ASC')
-        ]);
-    }
-
     #[Route('/admin/playlist/ajout', name: 'admin.playlist.ajout')]
     public function ajout(Request $request): Response {
         $playlist = new Playlist();
@@ -32,7 +25,9 @@ class AdminPlaylistsController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->repository->add($playlist, true);
-            return $this->redirectToRoute('admin.playlists');
+        
+            $this->addFlash('success', 'Playlist ajoutée avec succès.');
+            return $this->redirectToRoute('playlists');
         }
 
         return $this->render("admin/admin.playlist.edit.html.twig", [
@@ -48,7 +43,9 @@ class AdminPlaylistsController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->repository->add($playlist, true);
-            return $this->redirectToRoute('admin.playlists');
+            
+            $this->addFlash('success', 'Playlist modifiée avec succès.');
+            return $this->redirectToRoute('playlists');
         }
 
         return $this->render("admin/admin.playlist.edit.html.twig", [
@@ -63,7 +60,10 @@ class AdminPlaylistsController extends AbstractController {
             $this->addFlash('error', 'Impossible de supprimer une playlist contenant des formations.');
         } else {
             $this->repository->remove($playlist, true);
+            
+            $this->addFlash('success', 'Playlist supprimée.');
         }
-        return $this->redirectToRoute('admin.playlists');
+      
+        return $this->redirectToRoute('playlists');
     }
 }

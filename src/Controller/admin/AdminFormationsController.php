@@ -17,14 +17,6 @@ class AdminFormationsController extends AbstractController {
         $this->repository = $repository;
     }
 
-    #[Route('/admin/formations', name: 'admin.formations')]
-    public function index(): Response {
-        $formations = $this->repository->findAll();
-        return $this->render("admin/admin.formations.html.twig", [
-            'formations' => $formations
-        ]);
-    }
-
     #[Route('/admin/formation/edit/{id}', name: 'admin.formation.edit')]
     public function edit(Formation $formation, Request $request): Response {
         $form = $this->createForm(FormationType::class, $formation);
@@ -32,7 +24,9 @@ class AdminFormationsController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->repository->add($formation, true);
-            return $this->redirectToRoute('admin.formations');
+            
+            $this->addFlash('success', 'Formation modifiée avec succès.');
+            return $this->redirectToRoute('formations');
         }
 
         return $this->render("admin/admin.formation.edit.html.twig", [
@@ -49,7 +43,9 @@ class AdminFormationsController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->repository->add($formation, true);
-            return $this->redirectToRoute('admin.formations');
+            
+            $this->addFlash('success', 'Formation ajoutée avec succès.');
+            return $this->redirectToRoute('formations');
         }
 
         return $this->render("admin/admin.formation.edit.html.twig", [
@@ -62,7 +58,10 @@ class AdminFormationsController extends AbstractController {
     public function suppr(Formation $formation, Request $request): Response {
         if ($this->isCsrfTokenValid('delete'.$formation->getId(), $request->get('_token'))) {
             $this->repository->remove($formation, true);
+           
+            $this->addFlash('success', 'Formation supprimée.');
         }
-        return $this->redirectToRoute('admin.formations');
+      
+        return $this->redirectToRoute('formations');
     }
 }
