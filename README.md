@@ -47,8 +47,8 @@ En plus des fonctionnalités de consultation (Accueil, Formations, Playlists, CG
 ### 🏷️ Gestion des Catégories
 * **Organisation dynamique** : Ajout et suppression des catégories (ex: Java, PHP, Design) pour organiser les contenus de formation.
 
-![Capture Ecran](doc-images/catégories.png)
 ![Capture Ecran](doc-images/ajoutercatégorie.png)
+![Capture Ecran](doc-images/ajoutercatégoriemessage.png)
 ![Capture Ecran](doc-images/supprimercatégorie.png)
 ![Capture Ecran](doc-images/supprimercatégoriemessage.png)
 
